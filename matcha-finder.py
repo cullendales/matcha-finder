@@ -9,14 +9,23 @@ API_KEY = "..." #Insert your API key here to use program
 
 def check_nltk_data():
     try:
-        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab')
     except LookupError:
-        nltk.download('punkt')
+        try:
+            nltk.download('punkt_tab')
+        except:
+            nltk.download('punkt')
 
     try:
-        nltk.data.find('taggers/averaged_perceptron_tagger')
+        nltk.data.find('taggers/averaged_perceptron_tagger_eng')
     except LookupError:
-        nltk.download('averaged_perceptron_tagger')
+        try:
+            nltk.download('averaged_perceptron_tagger_eng')
+        except:
+            try:
+                nltk.data.find('taggers/averaged_perceptron_tagger')
+            except LookupError:
+                nltk.download('averaged_perceptron_tagger')
 
     try:
         nltk.data.find('corpora/stopwords')
@@ -24,6 +33,7 @@ def check_nltk_data():
         nltk.download('stopwords')
 
 check_nltk_data()
+stop_words = stopwords.words('english')
 
 class Cafe:
     def __init__(self, place_id, name, address, lon, lat, rating, reviews):
@@ -181,7 +191,11 @@ if __name__ == "__main__":
     lat, lon = search.coordinates(city)
     cafes = search.find_cafes(lat, lon)
 
-    print(cafes)
+    for cafe in cafes:
+        print(f"{cafe.name} - {cafe.address} - Rating: {cafe.rating}")
+        if cafe.keywords:
+            print(f"Keywords: {', '.join(cafe.keywords)}")
+        print()
 
 
 
