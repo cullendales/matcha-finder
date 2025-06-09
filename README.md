@@ -1,6 +1,6 @@
 # matcha-finder
 ## About
-This program was born out of my girlfriend's need for finding matcha lattes in every city we travel to together and spending way too much time scouring reviews for a hint of how they taste. I set out to make a more convenient format for her to decide on which cafe to go to and skip the time needed to read multiple reviews. This program will list all cafes within a city searched using Google Places and Geocaching APIs and output their rating, as well as adjectives people wrote in reviews about the matcha lattes in a convenient format underneath the cafes. The user can then further filter based off the keyword adjectives output or rating threshold to decide on the perfect cafe for them.
+This program was born out of my girlfriend's need for finding matcha lattes in every city we travel to together and spending way too much time scouring reviews for a hint of how they taste. I set out to make a more convenient format for her to decide on which cafe to go to and skip the time needed to read multiple reviews. This program will list all cafes with matcha lattes within a city searched using Google Places and Geocaching APIs and output their rating, as well as adjectives people wrote in reviews about the matcha lattes in a convenient format underneath the cafes. The user can then further filter based off the keyword adjectives output or rating threshold to decide on the perfect cafe for them.
 
 ## Getting Started
 #### Installation
