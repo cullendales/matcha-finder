@@ -15,7 +15,6 @@ API_KEY = "..."
 3. Enable Google Places (new) and Google Geocaching APIs on your google account
 
 ## Roadmap
-## Roadmap
 - [x] Implement API to make any city searchable for Matcha Lattes
 - [x] Implement SQLite to store cafe data
 - [x] Finish parser for adjectives in reviews about matcha lattes and display these to the user
