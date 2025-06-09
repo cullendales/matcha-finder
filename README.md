@@ -14,5 +14,13 @@ API_KEY = "..."
 ```
 3. Enable Google Places (new) and Google Geocaching APIs on your google account
 
+## Roadmap
+## Roadmap
+- [x] Implement API to make any city searchable for Matcha Lattes
+- [x] Implement SQLite to store cafe data
+- [x] Finish parser for adjectives in reviews about matcha lattes and display these to the user
+- [x] Enable filtering of cafes by keywords and ratings
+- [ ] Add working version to my website to allow users to test application without programming knowledge
+
 ## Notes
 I am in the process of writing another version of this program's code to enable it to run on my website without the need for a user to enter their own API key. I will update this README with a link once it is complete. This will allow for easier access to using this program when travelling. Please be patient as I am still learning front-end development. For now, please enjoy the program and I wish you the best of luck in your search for the best matcha latte!
