@@ -8,7 +8,7 @@ This program was born out of my girlfriend's need for finding matcha lattes in e
 ```sh
 git clone https://github.com/cullendales/matcha-finder
 ```
-2. Replace the ... with your API key for google in matcha-finger.py
+2. Replace the ... with your API key for google in matcha-finder.py
 ```sh
 API_KEY = "..."
 ```
