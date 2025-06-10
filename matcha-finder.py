@@ -204,15 +204,20 @@ if __name__ == "__main__":
     rating_filter = "1"
     user_keywords = []
     all_ratings = []
+    correct_option = True
 
     while answer != "4":
 
-        print("Would you like to filter results more?")
+        if correct_option:
+            print("Would you like to filter results more?")
+
         print("1. Filter by adjectives in reviews describing a cafe's Matcha Latte")
         print("2. Filter by rating threshold")
         print("3. Reset all previous filters")
         print("4. Exit")
         print()
+
+        correct_option = True
 
         answer = input("Enter 1, 2, 3, or 4: ")
         print()
@@ -284,7 +289,8 @@ if __name__ == "__main__":
             print("Thank you for using Matcha Finder")
 
         else:
-            print("The number you entered was not an option. Please enter one of the options below.")
+            print("The number you entered was not an option. Please enter one of the options below:")
+            correct_option = False
 
    
 
