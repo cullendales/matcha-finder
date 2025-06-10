@@ -188,14 +188,108 @@ class MatchaFinder:
 if __name__ == "__main__":
     search = MatchaFinder(API_KEY)
     city = input("Please enter the city you would like to search: ")
+    print()
+    print(f"Loading all cafes in {city} with delicious matcha lattes...")
+    print()
     lat, lon = search.coordinates(city)
     cafes = search.find_cafes(lat, lon)
 
     for cafe in cafes:
-        print(f"{cafe.name} - {cafe.address} - Rating: {cafe.rating}")
+        print(f"{cafe.name}\nAddress: {cafe.address}\nRating: {cafe.rating}")
         if cafe.keywords:
-            print(f"Keywords: {', '.join(cafe.keywords)}")
+            print(f"What people are saying about their Matcha Lattes: {', '.join(cafe.keywords)}")
         print()
+
+    answer = ""
+    rating_filter = "1"
+    user_keywords = []
+    all_ratings = []
+
+    while answer != "4":
+
+        print("Would you like to filter results more?")
+        print("1. Filter by adjectives in reviews describing a cafe's Matcha Latte")
+        print("2. Filter by rating threshold")
+        print("3. Reset all previous filters")
+        print("4. Exit")
+        print()
+
+        answer = input("Enter 1, 2, 3, or 4: ")
+        print()
+
+        if answer == "1":
+            user_keywords = input("Enter keywords to filter by seperated by a space: ").split()
+            print()
+            cafe_list = []
+    
+            for cafe in cafes:
+                for key in user_keywords:            
+                    if key in cafe.keywords and cafe.rating >= float(rating_filter):
+                        if cafe.name not in cafe_list:
+                            cafe_list.append(cafe.name)
+            
+            if not cafe_list:
+                user_keywords.clear()
+                print("No cafes match criteria.")
+                print()
+            else:
+                for cafe in cafes:
+                    if cafe.name in cafe_list and cafe.rating >= float(rating_filter):
+                        print(f"{cafe.name}\nAddress: {cafe.address}\nRating: {cafe.rating}")
+                        if cafe.keywords:
+                            print(f"What people are saying about their Matcha Lattes: {', '.join(cafe.keywords)}")
+                        print()
+                    
+        elif answer == "2":
+            rating_filter = input("Enter a number from 1 - 5 to only see cafes with that rating or higher: ")
+            print()
+            contains_cafe = False
+            all_ratings.append(rating_filter)
+
+
+            if not user_keywords:      
+                for cafe in cafes:
+                    if cafe.rating >= float(rating_filter):
+                            print(f"{cafe.name}\nAddress: {cafe.address}\nRating: {cafe.rating}")
+                            if cafe.keywords:
+                                print(f"What people are saying about their Matcha Lattes: {', '.join(cafe.keywords)}")
+                            print()
+                            contains_cafe = True
+
+            else:
+                for cafe in cafes:
+                    for key in user_keywords:            
+                        if key in cafe.keywords and cafe.rating >= float(rating_filter):
+                            if cafe.name not in cafe_list:
+                                cafe_list.append(cafe.name)
+                                contains_cafe = True
+                
+                for cafe in cafes:
+                    if cafe.name in cafe_list and cafe.rating >= float(rating_filter):
+                        print(f"{cafe.name}\nAddress: {cafe.address}\nRating: {cafe.rating}")
+                        if cafe.keywords:
+                            print(f"What people are saying about their Matcha Lattes: {', '.join(cafe.keywords)}")
+                        print()
+
+                if not contains_cafe:
+                    rating_filter = all_ratings[len(all_ratings) - 2]
+                    print("No cafes match criteria.")
+                    print()
+
+        elif answer == "3":
+            user_keywords.clear()
+            rating_filter = "1"
+                
+        elif answer == "4":
+            print("Thank you for using Matcha Finder")
+
+        else:
+            print("The number you entered was not an option. Please enter one of the options below.")
+
+   
+
+
+
 
 
 
