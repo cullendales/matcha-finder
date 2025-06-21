@@ -4,8 +4,11 @@ import time
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
+from dotenv import load_dotenv
+import os
 
-API_KEY = "..." #Insert your API key here to use program
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
 
 def check_nltk_data():
     try:
