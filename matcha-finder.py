@@ -53,8 +53,9 @@ class Cafe:
 
     def extract_keywords(self, reviews):
         tokenized = word_tokenize(reviews.lower())
-
-        wordsList = [w for w in tokenized if w not in stop_words and w.isalpha()]
+        linking_verbs = {'is', 'are', 'was', 'were', 'seems', 'tastes', 'feels'}
+        custom_stop_words = set(stop_words) - linking_verbs
+        wordsList = [w for w in tokenized if w not in custom_stop_words and w.isalpha()]
         
         if 'matcha' not in wordsList:
             return
@@ -63,14 +64,26 @@ class Cafe:
 
         for i, (word, tag) in enumerate(tagged_reviews):
             if word == 'matcha':
+                #checking word before for adj
                 if i > 0 and tagged_reviews[i-1][1] in ["JJ", "JJR", "JJS"]:
-                    self.keywords.append(tagged_reviews[i-1][0])
-                if i < len(tagged_reviews) - 2 and tagged_reviews[i+2][1] in ["JJ", "JJR", "JJS"]:
-                    self.keywords.append(tagged_reviews[i+2][0])
-                if i < len(tagged_reviews) - 3 and tagged_reviews[i+3][1] in ["JJ", "JJR", "JJS"]:
-                    self.keywords.append(tagged_reviews[i+3][0])      
+                    self.keywords.append(tagged_reviews[i-1][0])   
+                #check for linking verb and then adj
+                if i < len(tagged_reviews) - 2:
+                    next_word, next_tag = tagged_reviews[i+1]
+                    if next_word in linking_verbs:
+                        if i+2 < len(tagged_reviews) and tagged_reviews[i+2][1] in ["JJ", "JJR", "JJS"]:
+                            self.keywords.append(tagged_reviews[i+2][0])
+                        elif i+3 < len(tagged_reviews) and tagged_reviews[i+3][1] in ["JJ", "JJR", "JJS"]:
+                            self.keywords.append(tagged_reviews[i+3][0])     
+                    #check for same pattern above but after 'latte'             
+                    elif next_word == 'latte' and i < len(tagged_reviews) - 3:
+                        third_word, third_tag = tagged_reviews[i+2]
+                        if third_word in linking_verbs:
+                            if i+3 < len(tagged_reviews) and tagged_reviews[i+3][1] in ["JJ", "JJR", "JJS"]:
+                                self.keywords.append(tagged_reviews[i+3][0])
+                            elif i+4 < len(tagged_reviews) and tagged_reviews[i+4][1] in ["JJ", "JJR", "JJS"]:
+                                self.keywords.append(tagged_reviews[i+4][0])      
       
-
 class MatchaFinder:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -206,8 +219,6 @@ class MatchaFinder:
             cafe.keywords = row[6].split(", ") if row[6] else []
             cafes.append(cafe)
         return cafes
-
-
 
 def main():
     search = MatchaFinder(API_KEY)
