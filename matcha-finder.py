@@ -209,7 +209,7 @@ class MatchaFinder:
 
 
 
-if __name__ == "__main__":
+def main():
     search = MatchaFinder(API_KEY)
     city = input("Please enter the city you would like to search in the format \"city, country\": ")
     print()
@@ -321,6 +321,8 @@ if __name__ == "__main__":
             print("The number you entered was not an option. Please enter one of the options below:")
             correct_option = False
 
+if __name__ == "__main__":
+    main()
    
 
 
