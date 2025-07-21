@@ -86,7 +86,8 @@ class MatchaFinder:
             LON FLOAT,
             LAT FLOAT,
             RATING REAL,
-            KEYWORDS TEXT
+            KEYWORDS TEXT,
+            CITY TEXT
         );''')
         self.conn.commit()
 
@@ -123,7 +124,7 @@ class MatchaFinder:
         else:
             raise Exception (f"Error: {data['status']}")
 
-    def find_cafes(self, lat, lon):
+    def find_cafes(self, lat, lon, city):
         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         params = {
             "key": self.api_key,
@@ -159,7 +160,7 @@ class MatchaFinder:
                     reviews = reviews
                 )
                 cafes.append(cafe)
-                self.add_cafe(cafe)
+                self.add_cafe(cafe, city)
 
                 time.sleep(0.1)
 
@@ -180,12 +181,32 @@ class MatchaFinder:
 
         return cafes
     
-    def add_cafe(self, cafe):
+    def add_cafe(self, cafe, city):
         keywords_res = ", ".join(cafe.keywords) if cafe.keywords else ""
-        self.cursor.execute('''INSERT OR IGNORE INTO matcha_lattes (ID, NAME, ADDRESS, LON, LAT, RATING, KEYWORDS)
-                            VALUES (?,?,?,?,?,?, ?)''',
-                            (cafe.place_id, cafe.name, cafe.address, cafe.lon, cafe.lat, cafe.rating, keywords_res))
+        self.cursor.execute('''INSERT OR IGNORE INTO matcha_lattes (ID, NAME, ADDRESS, LON, LAT, RATING, KEYWORDS, CITY)
+                            VALUES (?,?,?,?,?,?,?,?)''',
+                            (cafe.place_id, cafe.name, cafe.address, cafe.lon, cafe.lat, cafe.rating, keywords_res, city.lower()))
         self.conn.commit()
+
+    def load_cached_cafes(self, city):
+        self.cursor.execute("SELECT * FROM matcha_lattes WHERE CITY = ?", (city.lower(),))
+        rows = self.cursor.fetchall()
+
+        cafes = []
+        for row in rows:
+            cafe = Cafe(
+                place_id=row[0],
+                name=row[1],
+                address=row[2],
+                lon=row[3],
+                lat=row[4],
+                rating=row[5],
+                reviews=None 
+            )
+            cafe.keywords = row[6].split(", ") if row[6] else []
+            cafes.append(cafe)
+        return cafes
+
 
 
 if __name__ == "__main__":
@@ -194,8 +215,12 @@ if __name__ == "__main__":
     print()
     print(f"Loading all cafes in {city} with delicious matcha lattes...")
     print()
-    lat, lon = search.coordinates(city)
-    cafes = search.find_cafes(lat, lon)
+
+    cafes = search.load_cached_cafes(city)  
+
+    if not cafes:
+        lat, lon = search.coordinates(city)
+        cafes = search.find_cafes(lat, lon, city)
 
     for cafe in cafes:
         print(f"{cafe.name}\nAddress: {cafe.address}\nRating: {cafe.rating}")
@@ -278,6 +303,7 @@ if __name__ == "__main__":
                         if cafe.keywords:
                             print(f"What people are saying about their Matcha Lattes: {', '.join(cafe.keywords)}")
                         print()
+                        contains_cafe = True
 
                 if not contains_cafe:
                     rating_filter = all_ratings[len(all_ratings) - 2]
